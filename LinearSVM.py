@@ -30,14 +30,14 @@ lsvc = LinearSVC()
 lsvc.fit(X_train, Y_train)
 lsvc_y_predict = lsvc.predict(X_test)
 
-print Y_test
-print "***********"
-print lsvc_y_predict
+print (Y_test)
+print ("***********")
+print (lsvc_y_predict)
 
 from sklearn.metrics import classification_report
 
-print "LR 精确度：" + str(lsvc.score(X_test, Y_test))
-print classification_report(Y_test, lsvc_y_predict, target_names=['fly','wo','jingui','zhang','zhizhu'])
+print ("LR 精确度：" + str(lsvc.score(X_test, Y_test)))
+print (classification_report(Y_test, lsvc_y_predict, target_names=['fly','wo','jingui','zhang','zhizhu']))
 
 # 保存训练结果，供后面直接使用
 from sklearn.externals import joblib

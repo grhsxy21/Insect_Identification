@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-RiceImg = cv2.imread('picture/ricetest.png', 0)
+RiceImg = cv2.imread('D:/GitHub/Insect_Identification/picture/ricetest.png', 0) #TODO改为绝对路径
 blur = cv2.GaussianBlur(RiceImg, (5, 5), 0)
 # find normalized_histogram, and its cumulative distribution function
 hist = cv2.calcHist([blur], [0], None, [256], [0, 256])
@@ -21,7 +21,7 @@ bins = np.arange(256)
 fn_min = np.inf
 thresh = -1
 
-for i in xrange(1, 256):
+for i in range(1, 256):    #* python3中取消了 xrange 函数，而把 xrange 函数重命名为 range
     p1, p2 = np.hsplit(hist_norm, [i])  # probabilities
     q1, q2 = Q[i], Q[255] - Q[i]  # cum sum of classes
     b1, b2 = np.hsplit(bins, [i])  # weights
@@ -39,13 +39,13 @@ for i in xrange(1, 256):
 # find otsu's threshold value with OpenCV function
 ret, otsu = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-print thresh, ret
+print (thresh, ret)
 
 ret1, manual = cv2.threshold(RiceImg, thresh, 255, cv2.THRESH_BINARY)
 title = ['Origin', 'filter', 'manual', 'function']
 images = [RiceImg, blur, manual, otsu]
 
-for i in xrange(4):
+for i in range(4):
     plt.subplot(1, 4, i + 1), plt.imshow(images[i], 'gray')
     plt.title(title[i])
     plt.xticks([]), plt.yticks([])

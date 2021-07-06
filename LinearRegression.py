@@ -32,9 +32,9 @@ lr_y_predict = lr.predict(X_test)
 
 from sklearn.metrics import classification_report
 
-print "LR 精确度：" + str(lr.score(X_test, Y_test))
+print ("LR 精确度：" + str(lr.score(X_test, Y_test)))
 # print classification_report(Y_test, lr_y_predict, target_names=['fly','wo','jingui','zhang'])
-print classification_report(Y_test, lr_y_predict, target_names=['fly','wo','jingui','zhang','zhizhu'])
+print (classification_report(Y_test, lr_y_predict, target_names=['fly','wo','jingui','zhang','zhizhu']))
 
 # 保存训练结果，供后面直接使用
 from sklearn.externals import joblib

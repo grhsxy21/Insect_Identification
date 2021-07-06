@@ -81,7 +81,7 @@ class GUI(QMainWindow):
         # self.ui.videoFrame_2.setScaledContents(True)
         self.captureFrame = self.video.captureFrame()
         cv2.imwrite("picture/test.jpg", self.captureFrame)
-        print 'Captured'
+        print ('Captured')
         # 此处添加处理和预测函数
         # 1. 调用图像处理
         [everythingRight ,P_rect, P_extend, P_spherical, P_leaf, P_circle, processedImg] = GetFeatures.GetFiveFeatures(self.captureFrame)
@@ -101,8 +101,8 @@ class GUI(QMainWindow):
             self.ui.label_spherical.setText(str(P_spherical))
             self.ui.label_leaf.setText(str(P_leaf))
             self.ui.label_circle.setText(str(P_circle))
-            print 'processed'
-            print Result
+            print ('processed')
+            print (Result)
 
         else:
             # 状态栏
@@ -113,7 +113,7 @@ class GUI(QMainWindow):
             self.ui.label_spherical.setText(str(P_spherical))
             self.ui.label_leaf.setText(str(P_leaf))
             self.ui.label_circle.setText(str(P_circle))
-            print 'processed'
+            print ('processed')
 
         frame = self.drawpic(processedImg)
         self.ui.videoFrame_2.setPixmap(frame)
@@ -138,7 +138,7 @@ class GUI(QMainWindow):
         cv2.imwrite("picture/testText.jpg", imText)
         pixmap = QPixmap('picture/testText.jpg')
         self.ui.videoFrame_2.setPixmap(pixmap)
-        print 'Text added' + text
+        print ('Text added' + text)
 
     def play(self):
         try:
@@ -146,7 +146,7 @@ class GUI(QMainWindow):
             self.ui.videoFrame.setPixmap(self.video.convertFrame())
             self.ui.videoFrame.setScaledContents(True)
         except TypeError:
-            print "No Frame"
+            print ("No Frame")
             self.ui.label_status.setText("No Frame")
 
 

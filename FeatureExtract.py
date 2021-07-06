@@ -8,13 +8,13 @@ import re
 
 import GetFeatures
 
-path = "D:/GitHub/Insect_Identification/dataset"   #TODO
+path = "E:/Documents/Python_Script/Insect_Identification/dataset"
 files = os.listdir(path)
 
 for filename in files:  # 遍历文件夹
     if not os.path.isdir(filename):  # 判断是否是文件夹，不是文件夹才打开
-        print (filename)
-        img = cv2.imread("D:/GitHub/Insect_Identification/dataset/" + filename)    #TODO
+        print filename
+        img = cv2.imread("E:/Documents/Python_Script/Insect_Identification/dataset/" + filename)
         [P_rect, P_extend, P_spherical, P_leaf, P_circle, processedImg] = GetFeatures.GetFiveFeatures(img)
         # [P_rect, P_extend, P_spherical, P_leaf, P_circle,P_complecate, processedImg] = GetFeatures.GetFiveFeatures(img)
 

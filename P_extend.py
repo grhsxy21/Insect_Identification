@@ -8,11 +8,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 #  此处读入图片，作为接口
-origin = cv2.imread('D:/GitHub/Insect_Identification/dataset/fly6.jpg') #TODO改为绝对路径
-grayimage = cv2.imread('D:/GitHub/Insect_Identification/dataset/fly6.jpg', 0)
+origin = cv2.imread('dataset/fly6.jpg')
+grayimage = cv2.imread('dataset/fly6.jpg', 0)
 
 # 　高斯滤波
-#*img = cv2.GaussianBlur(src, (blur1, blur2), 0)，其中src是要进行滤波的原图像，blur1，blur2）是高斯核的大小，blur1和blur2的选取一般是奇数，blur1和blur2的值可以不同。参数0表示标准差取0。
 blur = cv2.GaussianBlur(grayimage, (5, 5), 0)
 
 # 　二值化：用大津法，此处选项若是THRESH_BINARY_INV，则同意选用白色背景的图片样本
@@ -25,23 +24,23 @@ contours = cv2.findContours(otsu, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 largest_area = 0
 largest_contour_index = 0
-num = len(contours[0])  #!cv2.findContour()返回两个值:contours,hierachy，要的是contours，所以后面应该是0而不是1。
+num = len(contours[1])
 for i in range(num):
-    area = cv2.contourArea(contours[0][i], False)
+    area = cv2.contourArea(contours[1][i], False)
     if area > largest_area:
         largest_area = area
         largest_contour_index = i
 
-maxContour = contours[0][largest_contour_index]
+maxContour = contours[1][largest_contour_index]
 # 画轮廓
 cv2.drawContours(origin, maxContour, -1, (0, 0, 255), 2)
-print ("最大面积" + str(largest_area))
+print "最大面积" + str(largest_area)
 
 # 质心计算
 M = cv2.moments(maxContour)
 Centroid_x = int(M['m10'] / M['m00'])
 Centroid_y = int(M['m01'] / M['m00'])
-print ("质心" + str(Centroid_x) + " " + str(Centroid_y))
+print "质心" + str(Centroid_x) + " " + str(Centroid_y)
 cv2.circle(origin, (Centroid_x, Centroid_y), 8, (255, 255, 255), -1)
 
 # 获取长轴
@@ -87,8 +86,8 @@ Real_Major_Axis_Length = math.sqrt(
     math.pow((Major_Axis_End_x - Major_Axis_Begin_x), 2) + math.pow((Major_Axis_End_y - Major_Axis_Begin_y), 2))
 
 Real_Major_Axis_Length = round(Real_Major_Axis_Length, 1)
-print ("长轴长度 = " + str(Real_Major_Axis_Length))
-print ("长轴角度 = " + str(Major_Axis_Angle))
+print "长轴长度 = " + str(Real_Major_Axis_Length)
+print "长轴角度 = " + str(Major_Axis_Angle)
 # print "起点 = " + "x: " + str(Major_Axis_Begin_x) + "  y: " + str(Major_Axis_Begin_y)
 # print "起点 = " + "x: " + str(Major_Axis_End_x) + "  y: " + str(Major_Axis_End_y)
 
@@ -144,7 +143,7 @@ cv2.circle(origin, (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y), 4, (255, 25
 cv2.circle(origin, (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y), 4, (255, 255, 255), -1)
 # 画出两点直线
 cv2.line(origin, (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y), (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y),
-            (0, 255, 255), 3)
+         (0, 255, 255), 3)
 
 # 计算实际短轴长度
 Real_Minor_Axis_Length = math.sqrt(
@@ -152,12 +151,12 @@ Real_Minor_Axis_Length = math.sqrt(
         (Minor_Axis_Above_End_y - Minor_Axis_Under_End_y), 2))
 
 Real_Minor_Axis_Length = round(Real_Minor_Axis_Length, 1)
-print ("短轴长度 = " + str(Real_Minor_Axis_Length))
+print "短轴长度 = " + str(Real_Minor_Axis_Length)
 
 P_extend = Real_Minor_Axis_Length * 1.0 / Real_Major_Axis_Length
 P_extend = round(P_extend, 3)
 
-print ("延长度 = " + str(P_extend))
+print "延长度 = " + str(P_extend)
 # 画出与长轴距离最远的两点的辅助线,使用时可以不用，画图用作论文使用
 # 画出长轴右方
 line_above_k = math.tan((Major_Axis_Angle - 90) * 3.14 / 180.0)
@@ -165,14 +164,14 @@ line_above_b = Minor_Axis_Above_End_y - line_above_k * Minor_Axis_Above_End_x
 Minor_Axis_Above_Begin_x = int((line_above_b - Major_Axis_b) / (Major_Axis_k - line_above_k))
 Minor_Axis_Above_Begin_y = int(line_above_k * Minor_Axis_Above_Begin_x + line_above_b)
 cv2.line(origin, (Minor_Axis_Above_Begin_x, Minor_Axis_Above_Begin_y), (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y),
-            (255, 0, 255), 3)
+         (255, 0, 255), 3)
 
 line_under_k = math.tan((Major_Axis_Angle - 90) * 3.14 / 180.0)
 line_under_b = Minor_Axis_Under_End_y - line_under_k * Minor_Axis_Under_End_x
 Minor_Axis_Under_Begin_x = int((line_under_b - Major_Axis_b) / (Major_Axis_k - line_under_k))
 Minor_Axis_Under_Begin_y = int(line_under_k * Minor_Axis_Under_Begin_x + line_under_b)
 cv2.line(origin, (Minor_Axis_Under_Begin_x, Minor_Axis_Under_Begin_y), (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y),
-            (255, 255, 0), 3)
+         (255, 255, 0), 3)
 
 
 cv2.putText(origin, 'Major_Axis : ' + str(Real_Major_Axis_Length), (280, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 155), 2, cv2.LINE_AA)

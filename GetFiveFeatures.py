@@ -7,7 +7,7 @@ import math
 import numpy as np
 
 #  此处读入图片，作为接口
-pic_name = 'D:/GitHub/Insect_Identification/picture/butterfly0.jpg' #TODO改为绝对路径
+pic_name = 'picture/butterfly0.jpg'
 origin = cv2.imread(pic_name)
 grayimage = cv2.imread(pic_name, 0)
 
@@ -26,17 +26,17 @@ contours = cv2.findContours(otsu, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 largest_area = 0
 largest_contour_index = 0
-num = len(contours[0])  #!cv2.findContour()返回两个值:contours,hierachy，要的是contours，所以后面应该是0而不是1。
+num = len(contours[1])
 for i in range(num):
-    area = cv2.contourArea(contours[0][i], False)
+    area = cv2.contourArea(contours[1][i], False)
     if area > largest_area:
         largest_area = area
         largest_contour_index = i
 
-maxContour = contours[0][largest_contour_index]
+maxContour = contours[1][largest_contour_index]
 # 画轮廓
 cv2.drawContours(origin, maxContour, -1, (0, 0, 255), 2)
-print ("最大面积" + str(largest_area))
+print "最大面积" + str(largest_area)
 
 # 矩形度*****************************************************
 # 矩形度*****************************************************
@@ -52,13 +52,13 @@ cv2.drawContours(origin, [box], 0, (0, 255, 0), 2)
 
 # 计算最小外接矩形面积
 minAreaRect_Area = int(cv2.contourArea(box, False))
-print ("最小外接矩形面积" + str(minAreaRect_Area))
+print "最小外接矩形面积" + str(minAreaRect_Area)
 
 # 特征一：矩形度的计算
 P_Rect = largest_area * 1.0 / minAreaRect_Area
 # 统一结果为3位小数
 P_Rect = round(P_Rect, 3)
-print ("矩形度" + str(P_Rect))
+print "矩形度" + str(P_Rect)
 
 # 延长度***************************************************************************************************
 # 延长度***************************************************************************************************
@@ -70,7 +70,7 @@ print ("矩形度" + str(P_Rect))
 M = cv2.moments(maxContour)
 Centroid_x = int(M['m10'] / M['m00'])
 Centroid_y = int(M['m01'] / M['m00'])
-print ("质心" + str(Centroid_x) + " " + str(Centroid_y))
+print "质心" + str(Centroid_x) + " " + str(Centroid_y)
 cv2.circle(origin, (Centroid_x, Centroid_y), 3, (255, 255, 255), -1)
 
 # 获取长轴
@@ -116,8 +116,8 @@ Real_Major_Axis_Length = math.sqrt(
     math.pow((Major_Axis_End_x - Major_Axis_Begin_x), 2) + math.pow((Major_Axis_End_y - Major_Axis_Begin_y), 2))
 
 Real_Major_Axis_Length = round(Real_Major_Axis_Length, 1)
-print ("长轴长度 = " + str(Real_Major_Axis_Length))
-print ("长轴角度 = " + str(Major_Axis_Angle))
+print "长轴长度 = " + str(Real_Major_Axis_Length)
+print "长轴角度 = " + str(Major_Axis_Angle)
 # print "起点 = " + "x: " + str(Major_Axis_Begin_x) + "  y: " + str(Major_Axis_Begin_y)
 # print "起点 = " + "x: " + str(Major_Axis_End_x) + "  y: " + str(Major_Axis_End_y)
 
@@ -173,7 +173,7 @@ cv2.circle(origin, (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y), 4, (255, 25
 cv2.circle(origin, (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y), 4, (255, 255, 255), -1)
 # 画出两点直线
 cv2.line(origin, (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y), (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y),
-            (0, 255, 255), 3)
+         (0, 255, 255), 3)
 
 # 计算实际短轴长度
 Real_Minor_Axis_Length = math.sqrt(
@@ -181,13 +181,13 @@ Real_Minor_Axis_Length = math.sqrt(
         (Minor_Axis_Above_End_y - Minor_Axis_Under_End_y), 2))
 
 Real_Minor_Axis_Length = round(Real_Minor_Axis_Length, 1)
-print ("短轴长度 = " + str(Real_Minor_Axis_Length))
+print "短轴长度 = " + str(Real_Minor_Axis_Length)
 
 # 特征二：延长度的计算
 P_extend = Real_Major_Axis_Length * 1.0 / Real_Minor_Axis_Length
 P_extend = round(P_extend, 3)
 
-print ("延长度 = " + str(P_extend))
+print "延长度 = " + str(P_extend)
 # 画出与长轴距离最远的两点的辅助线,使用时可以不用，画图用作论文使用
 # 画出长轴右方
 line_above_k = math.tan((Major_Axis_Angle - 90) * 3.14 / 180.0)
@@ -195,14 +195,14 @@ line_above_b = Minor_Axis_Above_End_y - line_above_k * Minor_Axis_Above_End_x
 Minor_Axis_Above_Begin_x = int((line_above_b - Major_Axis_b) / (Major_Axis_k - line_above_k))
 Minor_Axis_Above_Begin_y = int(line_above_k * Minor_Axis_Above_Begin_x + line_above_b)
 cv2.line(origin, (Minor_Axis_Above_Begin_x, Minor_Axis_Above_Begin_y), (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y),
-            (255, 0, 255), 3)
+         (255, 0, 255), 3)
 
 line_under_k = math.tan((Major_Axis_Angle - 90) * 3.14 / 180.0)
 line_under_b = Minor_Axis_Under_End_y - line_under_k * Minor_Axis_Under_End_x
 Minor_Axis_Under_Begin_x = int((line_under_b - Major_Axis_b) / (Major_Axis_k - line_under_k))
 Minor_Axis_Under_Begin_y = int(line_under_k * Minor_Axis_Under_Begin_x + line_under_b)
 cv2.line(origin, (Minor_Axis_Under_Begin_x, Minor_Axis_Under_Begin_y), (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y),
-            (255, 255, 0), 3)
+         (255, 255, 0), 3)
 
 # 球状型计算************************************************************************************************
 # 球状型计算************************************************************************************************
@@ -237,7 +237,7 @@ cv2.circle(origin, (Centroid_x, Centroid_y), max_radius, (255, 0, 255), 2)
 
 P_pherical = min_radius * 1.0 / max_radius
 P_pherical = round(P_pherical, 3)
-print ("球状型： " + str(P_pherical))
+print "球状型： " + str(P_pherical)
 
 # 叶状型*************************************************************************************************
 # 叶状型*************************************************************************************************
@@ -246,7 +246,7 @@ print ("球状型： " + str(P_pherical))
 
 P_leaf = min_radius * 1.0 / Real_Major_Axis_Length
 P_leaf = round(P_leaf, 3)
-print ("叶状型 = " + str(P_leaf))
+print "叶状型 = " + str(P_leaf)
 
 # 计算似圆度***********************************************************************************************
 # 计算似圆度***********************************************************************************************
@@ -255,13 +255,13 @@ print ("叶状型 = " + str(P_leaf))
 
 P_circle = largest_area * 4.0 / (3.14 * Real_Major_Axis_Length * Real_Major_Axis_Length)
 P_circle = round(P_circle, 2)
-print ("似圆度 = " + str(P_circle))
+print "似圆度 = " + str(P_circle)
 
 
 ArcLength = cv2.arcLength(maxContour,True)
 P_complecate = ArcLength*ArcLength * 1.0 / (4 * 3.14 * largest_area)
 P_complecate = round(P_complecate, 2)
-print ("复杂度 = " + str(P_complecate))
+print "复杂度 = " + str(P_complecate)
 # data = [P_Rect,P_extend,P_pherical,P_leaf,P_circle,species]
 #
 # with open('data/data.csv', 'a+') as f:

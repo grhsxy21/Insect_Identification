@@ -25,15 +25,15 @@ def GetFiveFeatures(frame):
     # 轮廓集数目
     largest_area = 0
     largest_contour_index = 0
-    num = len(contours[0])  #!cv2.findContour()返回两个值:contours,hierachy，要的是contours，所以后面应该是0而不是1。
+    num = len(contours[1])
     for i in range(num):
-        area = cv2.contourArea(contours[0][i], False)
+        area = cv2.contourArea(contours[1][i], False)
         if area > largest_area:
             largest_area = area
             largest_contour_index = i
 
-    print ("最大面积" + str(largest_area))
-    maxContour = contours[0][largest_contour_index]
+    print "最大面积" + str(largest_area)
+    maxContour = contours[1][largest_contour_index]
 
     # 画轮廓
     cv2.drawContours(origin, maxContour, -1, (0, 0, 255), 2)
@@ -50,7 +50,7 @@ def GetFiveFeatures(frame):
 
     # 计算最小外接矩形面积
     minAreaRect_Area = int(cv2.contourArea(box, False))
-    print ("最小外接矩形面积" + str(minAreaRect_Area))
+    print "最小外接矩形面积" + str(minAreaRect_Area)
 
     # 错误判断，如果分母为零，直接报错
     if minAreaRect_Area == 0.0:
@@ -60,14 +60,14 @@ def GetFiveFeatures(frame):
     P_rect = largest_area * 1.0 / minAreaRect_Area
     # 统一结果为3位有理数
     P_rect = round(P_rect, 3)
-    print ("矩形度" + str(P_rect))
+    print "矩形度" + str(P_rect)
 
     # 2. 延长度
     # 质心计算
     M = cv2.moments(maxContour)
     Centroid_x = int(M['m10'] / M['m00'])
     Centroid_y = int(M['m01'] / M['m00'])
-    print ("质心" + str(Centroid_x) + " " + str(Centroid_y))
+    print "质心" + str(Centroid_x) + " " + str(Centroid_y)
     cv2.circle(origin, (Centroid_x, Centroid_y), 3, (255, 255, 255), -1)
 
     # 获取长轴
@@ -113,8 +113,8 @@ def GetFiveFeatures(frame):
         math.pow((Major_Axis_End_x - Major_Axis_Begin_x), 2) + math.pow((Major_Axis_End_y - Major_Axis_Begin_y), 2))
 
     Real_Major_Axis_Length = round(Real_Major_Axis_Length, 1)
-    print ("长轴长度 = " + str(Real_Major_Axis_Length))
-    print ("长轴角度 = " + str(Major_Axis_Angle))
+    print "长轴长度 = " + str(Real_Major_Axis_Length)
+    print "长轴角度 = " + str(Major_Axis_Angle)
     # print "起点 = " + "x: " + str(Major_Axis_Begin_x) + "  y: " + str(Major_Axis_Begin_y)
     # print "起点 = " + "x: " + str(Major_Axis_End_x) + "  y: " + str(Major_Axis_End_y)
 
@@ -170,7 +170,7 @@ def GetFiveFeatures(frame):
     cv2.circle(origin, (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y), 4, (255, 255, 255), -1)
     # 画出两点直线
     cv2.line(origin, (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y), (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y),
-                (0, 255, 255), 3)
+             (0, 255, 255), 3)
 
     # 计算实际短轴长度
     Real_Minor_Axis_Length = math.sqrt(
@@ -178,7 +178,7 @@ def GetFiveFeatures(frame):
             (Minor_Axis_Above_End_y - Minor_Axis_Under_End_y), 2))
 
     Real_Minor_Axis_Length = round(Real_Minor_Axis_Length, 1)
-    print ("短轴长度 = " + str(Real_Minor_Axis_Length))
+    print "短轴长度 = " + str(Real_Minor_Axis_Length)
 
     # 错误判断，如果分母为零，直接报错
     if Real_Minor_Axis_Length == 0.0:
@@ -187,7 +187,7 @@ def GetFiveFeatures(frame):
     P_extend = Real_Major_Axis_Length * 1.0 / Real_Minor_Axis_Length
     P_extend = round(P_extend, 3)
 
-    print ("延长度 = " + str(P_extend))
+    print "延长度 = " + str(P_extend)
     # 画出与长轴距离最远的两点的辅助线,使用时可以不用，画图用作论文使用
     # 画出长轴右方
     line_above_k = math.tan((Major_Axis_Angle - 90) * 3.14 / 180.0)
@@ -195,16 +195,16 @@ def GetFiveFeatures(frame):
     Minor_Axis_Above_Begin_x = int((line_above_b - Major_Axis_b) / (Major_Axis_k - line_above_k))
     Minor_Axis_Above_Begin_y = int(line_above_k * Minor_Axis_Above_Begin_x + line_above_b)
     cv2.line(origin, (Minor_Axis_Above_Begin_x, Minor_Axis_Above_Begin_y),
-                (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y),
-                (255, 0, 255), 3)
+             (Minor_Axis_Above_End_x, Minor_Axis_Above_End_y),
+             (255, 0, 255), 3)
 
     line_under_k = math.tan((Major_Axis_Angle - 90) * 3.14 / 180.0)
     line_under_b = Minor_Axis_Under_End_y - line_under_k * Minor_Axis_Under_End_x
     Minor_Axis_Under_Begin_x = int((line_under_b - Major_Axis_b) / (Major_Axis_k - line_under_k))
     Minor_Axis_Under_Begin_y = int(line_under_k * Minor_Axis_Under_Begin_x + line_under_b)
     cv2.line(origin, (Minor_Axis_Under_Begin_x, Minor_Axis_Under_Begin_y),
-                (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y),
-                (255, 255, 0), 3)
+             (Minor_Axis_Under_End_x, Minor_Axis_Under_End_y),
+             (255, 255, 0), 3)
 
     # 3. 球状型
     # 遍历轮廓每个点，求与质心最近的距离，作为最大内接圆半径,
@@ -239,7 +239,7 @@ def GetFiveFeatures(frame):
 
     P_spherical = min_radius * 1.0 / max_radius
     P_spherical = round(P_spherical, 3)
-    print ("球状型： " + str(P_spherical))
+    print "球状型： " + str(P_spherical)
 
 
     # 错误判断，如果分母为零，直接报错
@@ -248,7 +248,7 @@ def GetFiveFeatures(frame):
     # 4. 叶状型
     P_leaf = min_radius * 1.0 / Real_Major_Axis_Length
     P_leaf = round(P_leaf, 3)
-    print ("叶状型 = " + str(P_leaf))
+    print "叶状型 = " + str(P_leaf)
 
     # 错误判断，如果分母为零，直接报错
     if Real_Major_Axis_Length == 0.0:
@@ -256,7 +256,7 @@ def GetFiveFeatures(frame):
     # 5. 似圆度
     P_circle = largest_area * 4.0 / (3.14 * Real_Major_Axis_Length * Real_Major_Axis_Length)
     P_circle = round(P_circle, 2)
-    print ("似圆度 = " + str(P_circle))
+    print "似圆度 = " + str(P_circle)
 
     # 错误判断，如果分母为零，直接报错
     if Real_Major_Axis_Length == 0.0:
@@ -265,7 +265,7 @@ def GetFiveFeatures(frame):
     ArcLength = cv2.arcLength(maxContour, True)
     P_complecate = ArcLength * ArcLength * 1.0 / (4 * 3.14 * largest_area)
     P_complecate = round(P_complecate, 2)
-    print ("复杂度 = " + str(P_complecate))
+    print "复杂度 = " + str(P_complecate)
 
     # 可以捎带返回处理完之后的画完辅助线的图
     return [True, P_rect, P_extend, P_spherical, P_leaf, P_circle, origin]

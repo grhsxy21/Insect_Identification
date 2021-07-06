@@ -8,11 +8,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 #  此处读入图片，作为接口
-origin = cv2.imread('D:/GitHub/Insect_Identification/picture/butterfly.png')    #TODO改为绝对路径
-grayimage = cv2.imread('D:/GitHub/Insect_Identification/picture/butterfly.png', 0)
+origin = cv2.imread('picture/butterfly.png')
+grayimage = cv2.imread('picture/butterfly.png', 0)
 
 # 　高斯滤波
-#*img = cv2.GaussianBlur(src, (blur1, blur2), 0)，其中src是要进行滤波的原图像，blur1，blur2）是高斯核的大小，blur1和blur2的选取一般是奇数，blur1和blur2的值可以不同。参数0表示标准差取0。
 blur = cv2.GaussianBlur(grayimage, (5, 5), 0)
 
 # 　二值化：用大津法，此处选项若是THRESH_BINARY_INV，则同意选用白色背景的图片样本
@@ -25,23 +24,23 @@ contours = cv2.findContours(otsu, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 largest_area = 0
 largest_contour_index = 0
-num = len(contours[0])  #!cv2.findContour()返回两个值:contours,hierachy，要的是contours，所以后面应该是0而不是1。
+num = len(contours[1])
 for i in range(num):
-    area = cv2.contourArea(contours[0][i], False)
+    area = cv2.contourArea(contours[1][i], False)
     if area > largest_area:
         largest_area = area
         largest_contour_index = i
 
-maxContour = contours[0][largest_contour_index]
+maxContour = contours[1][largest_contour_index]
 # 画轮廓
 cv2.drawContours(origin, maxContour, -1, (0, 255, 0), 3)
-print ("最大面积" + str(largest_area))
+print "最大面积" + str(largest_area)
 
 # 质心计算
 M = cv2.moments(maxContour)
 Centroid_x = int(M['m10'] / M['m00'])
 Centroid_y = int(M['m01'] / M['m00'])
-print ("质心" + str(Centroid_x) + " " + str(Centroid_y))
+print "质心" + str(Centroid_x) + " " + str(Centroid_y)
 cv2.circle(origin, (Centroid_x, Centroid_y), 3, (255, 0, 0), -1)
 
 ContourItems = maxContour.shape[0]
@@ -73,7 +72,7 @@ cv2.circle(origin, (Centroid_x, Centroid_y), max_radius, (255, 0, 255), 2)
 
 P_pherical = min_radius * 1.0 / max_radius
 P_pherical = round(P_pherical,3)
-print ("球状性： " + str(P_pherical))
+print "球状性： " + str(P_pherical)
 
 cv2.putText(origin, 'min_radius : ' + str(min_radius), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (50, 50, 50), 2, cv2.LINE_AA)
 cv2.putText(origin, 'max_radius: ' + str(max_radius), (50, 85), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (50, 50, 50), 2, cv2.LINE_AA)

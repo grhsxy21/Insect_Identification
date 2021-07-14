@@ -5,12 +5,14 @@ import pandas as pd
 # 创建特征列表
 column_names = ['P_rect', 'P_extend', 'P_spherical', 'P_leaf', 'P_circle', 'Species']
 # column_names = ['P_rect', 'P_extend', 'P_spherical', 'P_leaf', 'P_circle','P_complecate', 'Species']
-data = pd.read_csv('data/data.csv', names=column_names)
+data = pd.read_csv('D:/GitHub/ZRB/Insect_Identification/data/data.csv', names=column_names) #TODO
 
 # print data.shape
 
 # 这个功能快要被抛弃了,分割训练和测试集
-from sklearn.cross_validation import train_test_split
+#from sklearn.cross_validation import train_test_split
+#*sklearn更新后在执行以上代码时可能会出现这样的问题——ModuleNotFoundError: No module named 'sklearn.cross_validation'
+from sklearn.model_selection import train_test_split
 
 X_train, X_test, Y_train, Y_test = train_test_split(data[column_names[0:5]], data[column_names[5]], test_size=0.25,
                                                     random_state=33)
@@ -40,8 +42,9 @@ print ("LR 精确度：" + str(lsvc.score(X_test, Y_test)))
 print (classification_report(Y_test, lsvc_y_predict, target_names=['fly','wo','jingui','zhang','zhizhu']))
 
 # 保存训练结果，供后面直接使用
-from sklearn.externals import joblib
+#from sklearn.externals import joblib
+import joblib
 
-joblib.dump(lsvc,'model/lsvc.model')
+joblib.dump(lsvc,'D:/GitHub/ZRB/Insect_Identification/model/lsvc.model')    #TODO
 
 

@@ -8,7 +8,7 @@ import numpy as np
 
 def GetFiveFeatures(frame):
     # 判空
-    if frame == None:
+    if frame.all() == None: #*值错误:包含一个以上元素的数组的真值是不明确的，要使用a.any()或a.all()
         return [False, 0.0, 0.0, 0.0, 0.0, 0.0, frame]
     origin = frame
     grayimage = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)

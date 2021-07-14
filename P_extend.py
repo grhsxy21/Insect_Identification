@@ -8,8 +8,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 #  此处读入图片，作为接口
-origin = cv2.imread('D:/GitHub/Insect_Identification/dataset/fly6.jpg') #TODO改为绝对路径
-grayimage = cv2.imread('D:/GitHub/Insect_Identification/dataset/fly6.jpg', 0)
+origin = cv2.imread('D:/GitHub/ZRB/Insect_Identification/dataset/fly6.jpg') #TODO改为绝对路径
+grayimage = cv2.imread('D:/GitHub/ZRB/Insect_Identification/dataset/fly6.jpg', 0)
 
 # 　高斯滤波
 #*img = cv2.GaussianBlur(src, (blur1, blur2), 0)，其中src是要进行滤波的原图像，blur1，blur2）是高斯核的大小，blur1和blur2的选取一般是奇数，blur1和blur2的值可以不同。参数0表示标准差取0。
